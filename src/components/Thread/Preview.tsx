@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Link } from '#/router'
+const styles = require('./styles.scss')
 
 interface Props {
   image: string
@@ -18,7 +19,7 @@ export default class Preview extends React.Component<Props> {
 
     return (image)
       ? (
-        <div className='image-wrap'>
+        <div className={styles['image-wrap']}>
           {url != null
             ? this.wrapInLink(inner)
             : inner}
