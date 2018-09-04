@@ -6,25 +6,39 @@ import Subreddit from '#/components/Subreddit'
 import SubredditModel from '#/models/Subreddit'
 
 interface Props {
-  name: string
+  name: string,
+  before?: string
+  after?: string
 }
 
-const SubredditLoader = createLoader(
-  ({ subreddit }) => loadSubreddit(subreddit),
-  (state, { subreddit }) => getSubreddit(state, subreddit),
-  (state, { subreddit }) => getSubredditIsLoading(state, subreddit),
-  (s: SubredditModel) => <Subreddit data={s} />
-)
+const SubredditLoader = createLoader<Props>({
+  loadAction: ({ name, before, after }) => loadSubreddit(name, before, after),
+  getData: (state, { name, before, after }) => getSubreddit(state, name, before, after),
+  getIsLoading: (state, { name, before, after }) => getSubredditIsLoading(state, name, before, after),
+  renderData: (s: SubredditModel) => <Subreddit data={s} />,
+  shouldReload: (newProps, oldProps) => {
+    return (newProps.after !== oldProps.after)
+      || (newProps.before !== oldProps.before)
+  }
+})
 
 export default class SubredditPage extends React.Component<Props> {
 
-  static getInitialProps = async ({ query }) => ({ name: query.name })
+  static getInitialProps = async ({ query }) => ({
+    name: query.name,
+    after: query.after
+  })
 
   render () {
-    const { name } = this.props
+    const { name, before, after } = this.props
+
     return (
       <Page type='subreddit'>
-        <SubredditLoader subreddit={name} />
+        <SubredditLoader
+          name={name}
+          before={before}
+          after={after}
+        />
       </Page>
     )
   }

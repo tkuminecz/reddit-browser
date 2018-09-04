@@ -5,17 +5,17 @@ import Page from '#/components/Page'
 import Thread from '#/components/Thread'
 import ThreadModel from '#/models/Thread'
 
-const ThreadLoader = createLoader(
-  (props) => loadThread(props.subreddit, props.id),
-  (state, props) => getThread(state, props.id),
-  (state, props) => getThreadIsLoading(state, props.id),
-  (t: ThreadModel) => <Thread thread={t} />
-)
-
 interface Props {
   id: string
   subreddit: string
 }
+
+const ThreadLoader = createLoader<Props>({
+  loadAction: ({ subreddit, id }) => loadThread(subreddit, id),
+  getData: (state, { id }) => getThread(state, id),
+  getIsLoading: (state, { id }) => getThreadIsLoading(state, id),
+  renderData: (t: ThreadModel) => <Thread thread={t} />
+})
 
 export default class ThreadPage extends React.Component<Props> {
 
