@@ -23,9 +23,9 @@ custom:
 # workflows
 workflows:
   version: 2
-  merge-checks:
+  checks:
     jobs:
-      - test:
+      - test
       - build:
           requires:
             - test
