@@ -36,6 +36,7 @@ jobs:
   test:
     <<: *baseJobConfig
     steps:
+      - checkout
       - restore_cache: *getCache
       - run: *install
       - save_cache: *setCache
@@ -45,6 +46,7 @@ jobs:
   build:
     <<: *baseJobConfig
     steps:
+      - checkout
       - restore_cache: *getCache
       - run: *install
       - save_cache: *setCache
