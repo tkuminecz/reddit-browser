@@ -30,7 +30,6 @@ export default function createLoader (loadAction, getData, getIsLoading, renderD
     (state, props) => {
       const data = getData(state, props)
       const isLoading = getIsLoading(state, props)
-      // console.log(state, props, data, isLoading)
       return { data, isLoading }
     },
     { loadAction }

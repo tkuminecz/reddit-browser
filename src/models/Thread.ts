@@ -1,7 +1,8 @@
 import { fetchThread } from '#/api'
+import Model from '#/model'
 import Comment from '#/models/Comment'
 
-interface Props {
+interface Data {
   id: string
   subreddit: string,
   title: string
@@ -13,29 +14,17 @@ interface Props {
   url: string
 }
 
-export default class Thread {
+export default class Thread extends Model<Data> {
 
-  id: string
-  subreddit: string
-  title: string
-  body: string
-  preview?: string
-  thumbnail?: string
-  comments: Comment[]
-  permalink: string
-  url: string
-
-  constructor (props: Props) {
-    this.id = props.id
-    this.subreddit = props.subreddit
-    this.title = props.title
-    this.body = props.body
-    this.preview = props.preview
-    this.thumbnail = props.thumbnail
-    this.comments = props.comments
-    this.permalink = props.permalink
-    this.url = props.url
-  }
+  get id () { return this.get('id') }
+  get subreddit () { return this.get('subreddit') }
+  get title () { return this.get('title') }
+  get body () { return this.get('body') }
+  get preview () { return this.get('preview') }
+  get thumbnail () { return this.get('thumbnail') }
+  get comments () { return this.get('comments') }
+  get permalink () { return this.get('permalink') }
+  get url () { return this.get('url') }
 
   static getBySubredditAndId = async (subreddit: string, id: string) => {
     const res = await fetchThread(subreddit, id)

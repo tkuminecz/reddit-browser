@@ -1,0 +1,12 @@
+@import 'src/static/styles/colors';
+
+.score {
+  font-family: monospace;
+
+  &.positive {
+    color: inherit;
+  }
+  &.negative {
+    color: $color_red;
+  }
+}

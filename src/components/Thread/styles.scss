@@ -1,0 +1,63 @@
+@import 'src/static/styles/global.scss';
+
+.thread {
+  .heading h1 {
+    font-size: $text_large;
+    margin: 0 0 1rem;
+  }
+
+  .external-link {
+    margin-left: 0.5rem;
+
+    a {
+      color: $color_light;
+      opacity: 0.5;
+      text-decoration: none;
+
+      &:hover {
+        color: $color_dark;
+      }
+    }
+  }
+
+  .subreddit {
+    font-size: $text_small;
+    margin-top: 2rem;
+
+    a {
+      color: $color_dark;
+    }
+  }
+
+  .image-wrap {
+    text-align: center;
+    img {
+      border-radius: 0.5rem;
+      height: auto;
+      max-width: 40rem;
+      width: 100%;
+    }
+  }
+}
+
+.comment {
+  background-color: hsl(0, 0, 97);
+  border-radius: 0.5rem;
+  box-shadow: 0px 5px 10px hsl(0, 0, 90);
+  display: inline-block;
+  margin: 0.5rem 0;
+  padding: 0.8rem;
+
+  .author {
+    color: hsl(0, 0, 60);
+    font-size: 0.95em;
+  }
+
+  .score {
+    font-size: 1.2em;
+    margin-right: 0.5rem;
+  }
+
+  .body {
+  }
+}

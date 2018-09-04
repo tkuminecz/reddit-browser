@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Thread } from '#/models/Subreddit'
 import { Link } from '#/router'
 import Score from '#/components/Score'
+const styles = require('./styles.scss')
 
 interface Props {
   thread: Thread
@@ -9,8 +10,10 @@ interface Props {
 
 export default ({ thread }: Props) => {
   return (
-    <div className='threadlist-item'>
-      <Score score={thread.score} />
+    <div className={styles.thread}>
+      <span className={styles.score}>
+        <Score score={thread.score} />
+      </span>
       <div className='title'>
         <Link
           route='thread'
@@ -18,7 +21,6 @@ export default ({ thread }: Props) => {
             subreddit: thread.subreddit,
             id: thread.id
           }}
-          prefetch
         >
           <a>{thread.title}</a>
         </Link>

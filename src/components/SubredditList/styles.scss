@@ -1,0 +1,22 @@
+@import 'src/static/styles/colors';
+@import 'src/static/styles/fonts';
+
+.subreddit {
+  align-items: flex-start;
+  display: flex;
+  justify-content: flex-start;
+
+  .score {
+    margin-right: 1rem;
+    min-width: 5rem;
+    text-align: right;
+  }
+  .right {
+    display: inline-block;
+
+    p {
+      color: $color_light;
+      font-size: $text_small;
+    }
+  }
+}

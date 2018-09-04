@@ -1,4 +1,5 @@
 import * as React from 'react'
+const styles = require('./styles.scss')
 
 interface Props {
   score: number
@@ -6,11 +7,11 @@ interface Props {
 
 export default ({ score }: Props) => {
   const scoreClass = (score > 0)
-    ? 'positive'
-    : 'negative'
+    ? styles.positive
+    : styles.negative
 
   return (
-    <span className={`score ${scoreClass}`}>
+    <span className={`${styles.score} ${scoreClass}`}>
       {score}
     </span>
   )

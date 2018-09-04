@@ -1,7 +1,11 @@
 
 export default class Model<T> {
-  props: T
+  data: T
   constructor (props: T) {
-    this.props = props
+    this.data = props
+  }
+
+  get<F extends keyof T> (s: F) {
+    return this.data[s]
   }
 }

@@ -9,10 +9,10 @@ interface ThreadProps {
 }
 
 export class Thread extends Model<ThreadProps> {
-  get id () { return this.props.id }
-  get subreddit () { return this.props.subreddit }
-  get score () { return this.props.score }
-  get title () { return this.props.title }
+  get id () { return this.get('id') }
+  get subreddit () { return this.get('subreddit') }
+  get score () { return this.get('score') }
+  get title () { return this.get('title') }
 }
 
 interface SubredditProps {
@@ -41,7 +41,7 @@ export default class Subreddit extends Model<SubredditProps> {
     })
   }
 
-  get name () { return this.props.name }
-  get threads () { return this.props.threads }
+  get name () { return this.get('name') }
+  get threads () { return this.get('threads') }
 
 }

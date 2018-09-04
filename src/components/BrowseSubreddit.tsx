@@ -1,11 +1,11 @@
 import * as React from 'react'
 import BrowseSubredditLoader from '#/components/BrowseSubredditLoader'
-import Title from '#/components/Title'
+import Heading from '#/components/Heading'
 
 export default () => {
   return (
     <>
-      <Title>Browse Subreddits</Title>
+      <Heading>Browse Subreddits</Heading>
       <BrowseSubredditLoader/>
     </>
   )

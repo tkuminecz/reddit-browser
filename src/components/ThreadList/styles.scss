@@ -1,0 +1,11 @@
+.thread {
+  display: flex;
+  justify-content: flex-start;
+  margin: 1rem 0;
+
+  .score {
+    margin: 0 1.5rem;
+    min-width: 3rem;
+    text-align: right;
+  }
+}

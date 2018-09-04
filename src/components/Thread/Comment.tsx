@@ -2,6 +2,7 @@ import * as React from 'react'
 import Comment from '#/models/Comment'
 import Markdown from '#/components/Markdown'
 import Score from '#/components/Score'
+const styles = require('./styles.scss')
 
 interface Props {
   comment: Comment
@@ -9,12 +10,14 @@ interface Props {
 
 export default ({ comment }: Props) => {
   return (
-    <div className='comment'>
-      <div className='meta'>
-        <Score score={comment.score} />
-        <span className='author'>{comment.author}</span>
+    <div className={styles.comment}>
+      <div className={styles.meta}>
+        <span className={styles.score}>
+          <Score score={comment.score} />
+        </span>
+        <span className={styles.author}>{comment.author}</span>
       </div>
-      <div className='body'>
+      <div className={styles.body}>
         <Markdown>{comment.body}</Markdown>
       </div>
     </div>

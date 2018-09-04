@@ -1,7 +1,14 @@
 import 'isomorphic-fetch'
 
 interface SubredditList {
+  banner_img?: string
+  banner_size?: [number, number]
+  description: string
   display_name: string
+  icon_img?: string
+  icon_size?: [number, number]
+  public_description: string
+  subscribers: number
 }
 
 export async function fetchSubredditList () {

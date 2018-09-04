@@ -1,20 +1,13 @@
 import * as React from 'react'
+import { createList } from '#/components/List'
 import { Thread } from '#/models/Subreddit'
 import ThreadListItem from './Thread'
+const styles = require('./styles.scss')
 
-interface Props {
-  threads: Thread[]
-}
+const ThreadList = createList<Thread>(item => <ThreadListItem thread={item} />)
 
-export default ({ threads }: Props) => {
-  return (
-    <div className='threadlist'>
-      <ul>
-        {threads.map((thread, i) =>
-          <li key={i}>
-            <ThreadListItem thread={thread} />
-          </li>)}
-      </ul>
-    </div>
-  )
-}
+export default (props) => (
+  <div className={styles.theadlist} >
+    <ThreadList {...props} />
+  </div>
+)

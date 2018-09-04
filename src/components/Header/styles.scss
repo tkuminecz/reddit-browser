@@ -1,0 +1,12 @@
+@import 'src/static/styles/global.scss';
+
+.header {
+  header {
+    background-color: $color_black;
+    left: 0;
+    padding: 1px;
+    position: fixed;
+    right: 0;
+    top: 0;
+  }
+}

@@ -8,12 +8,10 @@ export default class MyDocument extends Document {
         <Head>
           <meta name='viewport' content='width=device-width, initial-scale=1' />
           <link rel='stylesheet' href='/_next/static/style.css' />
-          <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c:300|Roboto' />
+          <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c:300|Roboto|Inconsolata:400,700' />
         </Head>
         <body>
-          <div className='container'>
-            <Main/>
-          </div>
+          <Main/>
           <NextScript/>
         </body>
       </html>
