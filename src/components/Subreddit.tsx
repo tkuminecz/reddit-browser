@@ -7,17 +7,9 @@ interface Props {
   data: SubredditModel
 }
 
-export default class Subreddit extends React.Component<Props> {
-
-  render () {
-    const { data } = this.props
-
-    return (
-      <>
-        <Title>{data.name}</Title>
-        <ThreadList items={data.threads} />
-      </>
-    )
-  }
-
-}
+export default ({ data }: Props) => (
+  <>
+    <Title>{data.name}</Title>
+    <ThreadList items={data.threads} />
+  </>
+)

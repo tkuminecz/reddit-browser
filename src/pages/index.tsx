@@ -1,12 +1,24 @@
 import * as React from 'react'
+import { loadSubredditList, getSubredditList, getSubredditListIsLoading } from '#/actions/reddit'
+import createLoader from '#/components/Loader'
+import Heading from '#/components/Heading'
 import Page from '#/components/Page'
-import BrowseSubreddits from '#/components/BrowseSubreddit'
+import SubredditList from '#/components/SubredditList'
+import SubredditListModel from '#/models/SubredditList'
 
-export default class HomePage extends React.Component {
+const BrowseSubredditLoader = createLoader(
+  loadSubredditList,
+  (state) => getSubredditList(state),
+  (state) => getSubredditListIsLoading(state),
+  (list: SubredditListModel) => <SubredditList items={list.subreddits} />
+)
+
+export default class BrowseSubredditPage extends React.Component {
   render () {
     return (
       <Page type='home'>
-        <BrowseSubreddits/>
+        <Heading>Browse Subreddits</Heading>
+        <BrowseSubredditLoader/>
       </Page>
     )
   }
