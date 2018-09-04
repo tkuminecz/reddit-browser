@@ -12,12 +12,13 @@ interface Props {
 }
 
 const SubredditLoader = createLoader<Props>({
-  loadAction: ({ name, before, after }) => loadSubreddit(name, after),
-  getData: (state, { name, before, after }) => getSubreddit(state, name, after),
-  getIsLoading: (state, { name, before, after }) => getSubredditIsLoading(state, name, after),
+  loadAction: ({ name, before, after }) => loadSubreddit(name, before, after),
+  getData: (state, { name, before, after }) => getSubreddit(state, name, before, after),
+  getIsLoading: (state, { name, before, after }) => getSubredditIsLoading(state, name, before, after),
   renderData: (s: SubredditModel) => <Subreddit data={s} />,
   shouldReload: (newProps, oldProps) => {
-    return newProps.after !== oldProps.after
+    return (newProps.after !== oldProps.after)
+      || (newProps.before !== oldProps.before)
   }
 })
 

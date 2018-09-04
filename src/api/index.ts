@@ -32,12 +32,8 @@ interface Subreddit {
   before?: string
 }
 
-export async function fetchSubreddit (name: string, after?: string) {
-  const baseUrl = n => `https://www.reddit.com/r/${n}.json`
-  const url = (after)
-    ? `${baseUrl(name)}?count=25&after=${after}`
-    : baseUrl(name)
-
+export async function fetchSubreddit (name: string, before?: string, after?: string) {
+  const url = `https://www.reddit.com/r/${name}.json?count=25&after=${after}&before=${before}`
   const res = await fetch(url)
   const body = await res.json()
   return {

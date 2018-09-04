@@ -24,8 +24,8 @@ interface SubredditProps {
 
 export default class Subreddit extends Model<SubredditProps> {
 
-  static getByName = async (name: string, afterKey?: string) => {
-    const { children, after, before } = await fetchSubreddit(name, afterKey)
+  static getByName = async (name: string, beforeKey?: string, afterKey?: string) => {
+    const { children, after, before } = await fetchSubreddit(name, beforeKey, afterKey)
 
     const threads = children.map(c => {
       return new Thread({

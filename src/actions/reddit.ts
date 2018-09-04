@@ -29,12 +29,12 @@ const LOAD_SUBREDDIT = '[subreddit] LOAD'
 const LOAD_SUBREDDIT_SUCCESS = '[subreddit] LOAD_SUCCESS'
 const LOAD_SUBREDDIT_ERROR = '[subreddit] LOAD_ERROR'
 
-export function loadSubreddit (name: string, after?: string) {
-  return { type: LOAD_SUBREDDIT, name, after }
+export function loadSubreddit (name: string, before?: string, after?: string) {
+  return { type: LOAD_SUBREDDIT, name, after, before }
 }
 
-export function loadSubredditSuccess (name: string, subreddit: Subreddit, after: string) {
-  return { type: LOAD_SUBREDDIT_SUCCESS, name, subreddit, after }
+export function loadSubredditSuccess (name: string, subreddit: Subreddit, before?: string, after?: string) {
+  return { type: LOAD_SUBREDDIT_SUCCESS, name, subreddit, after, before }
 }
 
 export function loadSubredditError (name: string, error: Error) {
@@ -68,7 +68,9 @@ interface State {
   }
   subredditData: {
     [k: string]: {
-      data: Error | Subreddit,
+      data: {
+        [k: string]: Error | Subreddit
+      },
       updated: Date
     }
   },
@@ -94,16 +96,20 @@ export const getSubredditList = (state) => getNamespace(state).subredditList && 
 
 export const getSubredditListIsLoading = (state) => getNamespace(state).subredditList == null
 
-export const getSubreddit = (state, name: string, after: string) => {
+const getSubredditKey = (before: string, after: string) => `${before}_${after}`
+
+export const getSubreddit = (state, name: string, before: string, after: string) => {
   const subredditData = getNamespace(state).subredditData
-  return (subredditData[name] != null && subredditData[name][after] != null)
-    ? subredditData[name][after].data
+  const key = getSubredditKey(before, after)
+  return (subredditData[name] != null && subredditData[name][key] != null)
+    ? subredditData[name][key].data
     : null
 }
 
-export const getSubredditIsLoading = (state, name: string, after: string) => {
+export const getSubredditIsLoading = (state, name: string, before: string, after: string) => {
   const subredditData = getNamespace(state).subredditData
-  return (subredditData[name] != null && subredditData[name][after] != null)
+  const key = getSubredditKey(before, after)
+  return (subredditData[name] != null && subredditData[name][key] != null)
     ? false
     : true
 }
@@ -136,6 +142,33 @@ export const reducers = {
           }
         }
 
+      case LOAD_SUBREDDIT_SUCCESS:
+        return {
+          ...state,
+          subredditData: {
+            ...state.subredditData,
+            [action.name]: {
+              ...state.subredditData[action.name],
+              [getSubredditKey(action.before, action.after)]: {
+                data: action.subreddit,
+                updated: new Date()
+              }
+            }
+          }
+        }
+
+      case LOAD_SUBREDDIT_ERROR:
+        return {
+          ...state,
+          subredditData: {
+            ...state.subredditData,
+            [action.name]: {
+              data: action.error,
+              updated: new Date()
+            }
+          }
+        }
+
       case LOAD_THREAD_SUCCESS:
         return {
           ...state,
@@ -154,33 +187,6 @@ export const reducers = {
           threadData: {
             ...state.threadData,
             [action.id]: {
-              data: action.error,
-              updated: new Date()
-            }
-          }
-        }
-
-      case LOAD_SUBREDDIT_SUCCESS:
-        return {
-          ...state,
-          subredditData: {
-            ...state.subredditData,
-            [action.name]: {
-              ...state.subredditData[action.name],
-              [action.after]: {
-                data: action.subreddit,
-                updated: new Date()
-              }
-            }
-          }
-        }
-
-      case LOAD_SUBREDDIT_ERROR:
-        return {
-          ...state,
-          subredditData: {
-            ...state.subredditData,
-            [action.name]: {
               data: action.error,
               updated: new Date()
             }
@@ -216,11 +222,11 @@ function* loadSubredditListSaga () {
 }
 
 function* loadSubredditSaga (action: ReturnType<typeof loadSubreddit>) {
-  const subreddit = yield select(s => getSubreddit(s, action.name, action.after))
+  const subreddit = yield select(s => getSubreddit(s, action.name, action.before, action.after))
   if (subreddit == null) {
     try {
-      const subreddit = yield call(Subreddit.getByName, action.name, action.after)
-      yield put(loadSubredditSuccess(action.name, subreddit, action.after))
+      const subreddit = yield call(Subreddit.getByName, action.name, action.before, action.after)
+      yield put(loadSubredditSuccess(action.name, subreddit, action.before, action.after))
     } catch (err) {
       yield put(loadSubredditError(action.name, err))
     }
