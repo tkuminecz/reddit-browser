@@ -2,6 +2,10 @@ version: 2
 
 # custom configuraton
 custom:
+  baseJobConfig: &baseJobConfig
+    docker:
+      - image: circleci/node:8
+
   getCache: &getCache
     keys:
       - v1-deps-{{ .Branch }}-{{ checksum "yarn.lock" }}
@@ -13,7 +17,7 @@ custom:
     paths:
       - node_modules
 
-  install: &install yarn install
+  npmInstall: &install yarn install
 
 # workflows
 workflows:
@@ -30,8 +34,7 @@ jobs:
 
   # run tests
   test:
-    docker:
-      - image: circleci/node:8
+    <<: *baseJobConfig
     steps:
       - restore_cache: *getCache
       - run: *install
@@ -40,8 +43,7 @@ jobs:
 
   # make a build
   build:
-    docker:
-      - image: circleci/node:8
+    <<: *baseJobConfig
     steps:
       - restore_cache: *getCache
       - run: *install
