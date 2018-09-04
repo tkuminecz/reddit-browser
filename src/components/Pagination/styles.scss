@@ -1,0 +1,18 @@
+@import 'src/static/styles/colors';
+@import 'src/static/styles/fonts';
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+
+  .prev, .next {
+    color: $color_dark;
+    font-size: $text_small;
+    margin: 0 2rem;
+
+    &:hover {
+      color: $color_black;
+    }
+  }
+}
