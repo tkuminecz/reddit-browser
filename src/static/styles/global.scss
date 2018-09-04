@@ -1,0 +1,183 @@
+@import '../../../node_modules/purecss/build/base-min.css';
+
+$breakpoint_desktop: 1200px;
+$breakpoint_tablet: 992px;
+$breakpoint_phone: 768px;
+
+$text_large: 1.7rem;
+$text_medium: 1.5rem;
+$text_normal: 1rem;
+$text_small: 0.9rem;
+$text_tiny: 0.7rem;
+
+$color_light: hsl(0, 0, 60);
+$color_dark: hsl(0, 0, 45);
+$color_normal: hsl(0, 0, 30);
+$color_red: hsl(10, 100, 50);
+
+body {
+  color: hsl(0, 0, 30);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: $text_normal;
+}
+
+.container {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+@media (min-width: $breakpoint_phone) {
+  .container {
+    width: 750px;
+  }
+}
+@media (min-width: $breakpoint_tablet) {
+  .container {
+    width: 900px;
+  }
+}
+@media (min-width: $breakpoint_desktop) {
+  .container {
+    width: 1000px;
+  }
+}
+
+p {
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.5rem;
+}
+
+.logo {
+  color: $color_light;
+  letter-spacing: 0.05rem;
+  margin: 1rem 0;
+}
+
+footer {
+  p {
+    color: $color_light;
+    font-size: $text_small;
+    margin: 1rem;
+    padding: 0;
+    text-align: center;
+  }
+}
+
+.loading {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+
+  .spinner {
+    color: $color_light;
+    font-size: $text_large;
+    margin: 1rem;
+  }
+}
+
+.heading {
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-weight: 300;
+}
+
+h1, h2, h3, h4 {
+  @extend .heading;
+}
+
+ul {
+  padding: 0;
+
+  li {
+    list-style-type: none;
+  }
+}
+
+.threadlist {
+  ul {
+    li {
+      .threadlist-item {
+        display: flex;
+        justify-content: flex-start;
+        margin: 1rem 0;
+
+        .score {
+          display: inline-block;
+          margin: 0 1.5rem;
+          text-align: right;
+          min-width: 3rem;
+        }
+      }
+    }
+  }
+}
+
+.thread {
+  h2 {
+    font-size: $text_large;
+    margin: 0 0 1rem;
+  }
+
+  .external-link {
+    margin-left: 0.5rem;
+
+    a {
+      color: $color_light;
+      opacity: 0.5;
+      text-decoration: none;
+
+      &:hover {
+        color: $color_dark;
+      }
+    }
+  }
+
+  .subreddit {
+    font-size: $text_small;
+    margin-top: 2rem;
+
+    a {
+      color: $color_dark;
+    }
+  }
+
+  .image-wrap {
+    text-align: center;
+    img {
+      border-radius: 0.5rem;
+      height: auto;
+      max-width: 40rem;
+      width: 100%;
+    }
+  }
+}
+
+.comment {
+  background-color: hsl(0, 0, 97);
+  border-radius: 0.5rem;
+  box-shadow: 0px 5px 10px hsl(0, 0, 90);
+  display: inline-block;
+  margin: 0.5rem 0;
+  padding: 0.8rem;
+
+  .author {
+    color: hsl(0, 0, 60);
+    font-size: 0.95em;
+  }
+
+  .score {
+    font-size: 1.2em;
+    margin-right: 0.5rem;
+
+    &.positive {
+      // color: $color_green;
+    }
+
+    &.negative {
+      color: $color_red;
+    }
+  }
+
+  .body {
+  }
+}
