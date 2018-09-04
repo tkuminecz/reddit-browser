@@ -6,12 +6,12 @@ import Page from '#/components/Page'
 import SubredditList from '#/components/SubredditList'
 import SubredditListModel from '#/models/SubredditList'
 
-const BrowseSubredditLoader = createLoader(
-  loadSubredditList,
-  (state) => getSubredditList(state),
-  (state) => getSubredditListIsLoading(state),
-  (list: SubredditListModel) => <SubredditList items={list.subreddits} />
-)
+const BrowseSubredditLoader = createLoader({
+  loadAction: loadSubredditList,
+  getData: (state) => getSubredditList(state),
+  getIsLoading: (state) => getSubredditListIsLoading(state),
+  renderData: (list: SubredditListModel) => <SubredditList items={list.subreddits} />
+})
 
 export default class BrowseSubredditPage extends React.Component {
   render () {

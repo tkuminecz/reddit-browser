@@ -18,6 +18,7 @@ const isFirst = (threads: any[], beforeId: string) => {
 
 const isLast = (threads: any[], afterId: string) => {
   const last = threads.map(t => t.id).pop()
+  console.log(last, afterId)
   return false // (`t3_${last}` === afterId)
 }
 
