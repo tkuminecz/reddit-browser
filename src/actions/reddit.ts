@@ -1,9 +1,11 @@
-import { all, call, put, select, takeLatest } from 'redux-saga/effects'
+import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 import Subreddit from '#/models/Subreddit'
 import SubredditList from '#/models/SubredditList'
 import Thread from '#/models/Thread'
 
 const namespace = Symbol('reddit').toString()
+
+/* load subreddit list actions */
 
 const LOAD_SUBREDDIT_LIST = '[subreddit-list] LOAD'
 const LOAD_SUBREDDIT_LIST_SUCCESS = '[subreddit-list] LOAD_SUCCESS'
@@ -21,21 +23,25 @@ export function loadSubredditListError (error: Error) {
   return { type: LOAD_SUBREDDIT_LIST_ERROR, error }
 }
 
+/* load single subreddit actions */
+
 const LOAD_SUBREDDIT = '[subreddit] LOAD'
 const LOAD_SUBREDDIT_SUCCESS = '[subreddit] LOAD_SUCCESS'
 const LOAD_SUBREDDIT_ERROR = '[subreddit] LOAD_ERROR'
 
-export function loadSubreddit (name: string) {
-  return { type: LOAD_SUBREDDIT, name }
+export function loadSubreddit (name: string, after?: string) {
+  return { type: LOAD_SUBREDDIT, name, after }
 }
 
-export function loadSubredditSuccess (name: string, subreddit: Subreddit) {
-  return { type: LOAD_SUBREDDIT_SUCCESS, name, subreddit }
+export function loadSubredditSuccess (name: string, subreddit: Subreddit, after: string) {
+  return { type: LOAD_SUBREDDIT_SUCCESS, name, subreddit, after }
 }
 
 export function loadSubredditError (name: string, error: Error) {
   return { type: LOAD_SUBREDDIT_ERROR, name, error }
 }
+
+/* load thread actions */
 
 const LOAD_THREAD = '[thread] LOAD'
 const LOAD_THREAD_SUCCESS = '[thread] LOAD_SUCCESS'
@@ -52,6 +58,8 @@ export function loadThreadSuccess (id: string, thread: Thread) {
 export function loadThreadError (id: string, error: Error) {
   return { type: LOAD_THREAD_ERROR, id, error }
 }
+
+/* state */
 
 interface State {
   subredditList: void | {
@@ -78,37 +86,43 @@ const initialState: State = {
   threadData: {}
 }
 
-export const getSubredditList = (state) => state[namespace].subredditList && state[namespace].subredditList.data
+/* selectors */
 
-export const getSubredditListIsLoading = (state) => state[namespace].subredditList == null
+const getNamespace = (state) => state[namespace]
 
-export const getSubreddit = (state, name: string) => {
-  const subredditData = state[namespace].subredditData
-  return (subredditData[name] != null)
-    ? subredditData[name].data
+export const getSubredditList = (state) => getNamespace(state).subredditList && state[namespace].subredditList.data
+
+export const getSubredditListIsLoading = (state) => getNamespace(state).subredditList == null
+
+export const getSubreddit = (state, name: string, after: string) => {
+  const subredditData = getNamespace(state).subredditData
+  return (subredditData[name] != null && subredditData[name][after] != null)
+    ? subredditData[name][after].data
     : null
 }
 
-export const getSubredditIsLoading = (state, name: string) => {
-  const subredditData = state[namespace].subredditData
-  return (subredditData[name] != null)
+export const getSubredditIsLoading = (state, name: string, after: string) => {
+  const subredditData = getNamespace(state).subredditData
+  return (subredditData[name] != null && subredditData[name][after] != null)
     ? false
     : true
 }
 
 export const getThread = (state, id: string) => {
-  const threadData = state[namespace].threadData
+  const threadData = getNamespace(state).threadData
   return (threadData[id] != null)
     ? threadData[id].data
     : null
 }
 
 export const getThreadIsLoading = (state, id: string) => {
-  const threadData = state[namespace].threadData
+  const threadData = getNamespace(state).threadData
   return (threadData[id] != null)
     ? false
     : true
 }
+
+/* reducers */
 
 export const reducers = {
   [namespace]: (state = initialState, action): State => {
@@ -152,8 +166,11 @@ export const reducers = {
           subredditData: {
             ...state.subredditData,
             [action.name]: {
-              data: action.subreddit,
-              updated: new Date()
+              ...state.subredditData[action.name],
+              [action.after]: {
+                data: action.subreddit,
+                updated: new Date()
+              }
             }
           }
         }
@@ -176,11 +193,13 @@ export const reducers = {
   }
 }
 
+/* sagas */
+
 export function* saga () {
   yield all([
     takeLatest(LOAD_SUBREDDIT_LIST, loadSubredditListSaga),
-    takeLatest(LOAD_SUBREDDIT, loadSubredditSaga),
-    takeLatest(LOAD_THREAD, loadThreadSaga)
+    takeEvery(LOAD_SUBREDDIT, loadSubredditSaga),
+    takeEvery(LOAD_THREAD, loadThreadSaga)
   ])
 }
 
@@ -196,19 +215,19 @@ function* loadSubredditListSaga () {
   }
 }
 
-function* loadSubredditSaga (action) {
-  const subreddit = yield select(s => getSubreddit(s, action.name))
+function* loadSubredditSaga (action: ReturnType<typeof loadSubreddit>) {
+  const subreddit = yield select(s => getSubreddit(s, action.name, action.after))
   if (subreddit == null) {
     try {
-      const subreddit = yield call(Subreddit.getByName, action.name)
-      yield put(loadSubredditSuccess(action.name, subreddit))
+      const subreddit = yield call(Subreddit.getByName, action.name, action.after)
+      yield put(loadSubredditSuccess(action.name, subreddit, action.after))
     } catch (err) {
       yield put(loadSubredditError(action.name, err))
     }
   }
 }
 
-function* loadThreadSaga (action) {
+function* loadThreadSaga (action: ReturnType<typeof loadThread>) {
   const thread = yield select(s => getThread(s, action.id))
   if (thread == null) {
     try {

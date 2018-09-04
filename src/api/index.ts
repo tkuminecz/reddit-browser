@@ -27,15 +27,24 @@ interface SubredditThread {
 }
 
 interface Subreddit {
-  data: {
-    children: SubredditThread[]
-  }
+  children: SubredditThread[]
+  after?: string
+  before?: string
 }
 
-export async function fetchSubreddit (name: string) {
-  const res = await fetch(`https://www.reddit.com/r/${name}.json`)
+export async function fetchSubreddit (name: string, after?: string) {
+  const baseUrl = n => `https://www.reddit.com/r/${n}.json`
+  const url = (after)
+    ? `${baseUrl(name)}?count=25&after=${after}`
+    : baseUrl(name)
+
+  const res = await fetch(url)
   const body = await res.json()
-  return body as Subreddit
+  return {
+    children: body.data.children,
+    after: body.data.after,
+    before: body.data.before
+  } as Subreddit
 }
 
 interface Thread {}

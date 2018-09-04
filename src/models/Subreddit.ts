@@ -18,15 +18,16 @@ export class Thread extends Model<ThreadProps> {
 interface SubredditProps {
   name: string
   threads: Thread[]
+  after?: string
+  before?: string
 }
 
 export default class Subreddit extends Model<SubredditProps> {
 
-  static getByName = async (name: string) => {
-    const res = await fetchSubreddit(name)
+  static getByName = async (name: string, afterKey?: string) => {
+    const { children, after, before } = await fetchSubreddit(name, afterKey)
 
-    const subreddit = res.data
-    const threads = subreddit.children.map(c => {
+    const threads = children.map(c => {
       return new Thread({
         id: c.data.id,
         subreddit: c.data.subreddit,
@@ -35,13 +36,12 @@ export default class Subreddit extends Model<SubredditProps> {
       })
     })
 
-    return new Subreddit({
-      name: name,
-      threads
-    })
+    return new Subreddit({ name, threads, after, before })
   }
 
   get name () { return this.get('name') }
   get threads () { return this.get('threads') }
+  get after () { return this.get('after') }
+  get before () { return this.get('before') }
 
 }
