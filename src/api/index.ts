@@ -1,6 +1,6 @@
 import 'isomorphic-fetch'
 
-interface SubredditList {
+interface SubredditListItem {
   banner_img?: string
   banner_size?: [number, number]
   description: string
@@ -11,10 +11,20 @@ interface SubredditList {
   subscribers: number
 }
 
-export async function fetchSubredditList () {
-  const res = await fetch(`https://www.reddit.com/subreddits.json?count=100`)
+interface SubredditList {
+  items: SubredditListItem[]
+  after?: string
+  before?: string
+}
+
+export async function fetchSubredditList (before?: string, after?: string) {
+  const res = await fetch(`https://www.reddit.com/subreddits.json?count=25&after=${after}&before=${before}`)
   const body = await res.json()
-  return body.data.children.map(c => c.data) as SubredditList[]
+  return {
+    items: body.data.children.map(c => c.data),
+    after: body.data.after,
+    before: body.data.before
+  } as SubredditList
 }
 
 interface SubredditThread {

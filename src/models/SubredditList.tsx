@@ -15,21 +15,28 @@ export class Subreddit extends Model<Props> {
 
 interface ListProps {
   subreddits: Subreddit[]
+  after?: string
+  before?: string
 }
 
 export default class SubredditList extends Model<ListProps> {
 
-  static get = async () => {
-    const list = await fetchSubredditList()
+  static get = async (before?: string, after?: string) => {
+    const list = await fetchSubredditList(before, after)
 
     return new SubredditList({
-      subreddits: list.map(l => new Subreddit({
+      subreddits: list.items.map(l => new Subreddit({
         description: l.public_description,
         name: l.display_name,
         subscriberCount: l.subscribers
-      }))
+      })),
+      after: list.after,
+      before: list.before
     })
   }
 
   get subreddits () { return this.get('subreddits') }
+  get before () { return this.get('before') }
+  get after () { return this.get('after') }
+
 }

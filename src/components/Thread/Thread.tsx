@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { getThreadIsLoading, getThread, loadThread } from '#/actions/reddit'
+import { getThreadIsLoading, getThread, loadThread } from '#/actions/thread'
 import { Link } from '#/router'
 import createLoader from '#/components/Loader'
 import Comment from './Comment'

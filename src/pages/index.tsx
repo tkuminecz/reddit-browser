@@ -1,25 +1,30 @@
 import * as React from 'react'
-import { loadSubredditList, getSubredditList, getSubredditListIsLoading } from '#/actions/reddit'
-import createLoader from '#/components/Loader'
-import Heading from '#/components/Heading'
 import Page from '#/components/Page'
 import SubredditList from '#/components/SubredditList'
-import SubredditListModel from '#/models/SubredditList'
 
-const BrowseSubredditLoader = createLoader({
-  loadAction: loadSubredditList,
-  getData: (state) => getSubredditList(state),
-  getIsLoading: (state) => getSubredditListIsLoading(state),
-  renderData: (list: SubredditListModel) => <SubredditList items={list.subreddits} />
-})
+interface Props {
+  after?: string
+  before?: string
+}
 
-export default class BrowseSubredditPage extends React.Component {
+export default class BrowseSubredditPage extends React.Component<Props> {
+
+  static getInitialProps = async ({ query }) => ({
+    after: query.after,
+    before: query.before
+  })
+
   render () {
+    const { before, after } = this.props
+
     return (
       <Page type='home'>
-        <Heading>Browse Subreddits</Heading>
-        <BrowseSubredditLoader/>
+        <SubredditList
+          after={after}
+          before={before}
+        />
       </Page>
     )
   }
+
 }
