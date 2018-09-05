@@ -1,26 +1,12 @@
 import * as React from 'react'
-import { getSubreddit, getSubredditIsLoading, loadSubreddit } from '#/actions/reddit'
-import createLoader from '#/components/Loader'
 import Page from '#/components/Page'
 import Subreddit from '#/components/Subreddit'
-import SubredditModel from '#/models/Subreddit'
 
 interface Props {
   name: string,
   before?: string
   after?: string
 }
-
-const SubredditLoader = createLoader<Props>({
-  loadAction: ({ name, before, after }) => loadSubreddit(name, before, after),
-  getData: (state, { name, before, after }) => getSubreddit(state, name, before, after),
-  getIsLoading: (state, { name, before, after }) => getSubredditIsLoading(state, name, before, after),
-  renderData: (s: SubredditModel) => <Subreddit data={s} />,
-  shouldReload: (newProps, oldProps) => {
-    return (newProps.after !== oldProps.after)
-      || (newProps.before !== oldProps.before)
-  }
-})
 
 export default class SubredditPage extends React.Component<Props> {
 
@@ -34,7 +20,7 @@ export default class SubredditPage extends React.Component<Props> {
 
     return (
       <Page type='subreddit'>
-        <SubredditLoader
+        <Subreddit
           name={name}
           before={before}
           after={after}

@@ -1,10 +1,12 @@
 import * as React from 'react'
-import ThreadModel from '#/models/Thread'
-import Comment from './Comment'
+import { getThreadIsLoading, getThread, loadThread } from '#/actions/reddit'
 import { Link } from '#/router'
+import createLoader from '#/components/Loader'
+import Comment from './Comment'
 import List from '#/components/List'
 import Markdown from '#/components/Markdown'
 import Preview from './Preview'
+import ThreadModel from '#/models/Thread'
 import Title from '#/components/Heading'
 const styles = require('./styles.scss')
 
@@ -12,7 +14,7 @@ interface Props {
   thread: ThreadModel
 }
 
-export default class Thread extends React.Component<Props> {
+class Thread extends React.Component<Props> {
   render () {
     const { thread } = this.props
 
@@ -43,3 +45,15 @@ export default class Thread extends React.Component<Props> {
     )
   }
 }
+
+interface LoaderProps {
+  subreddit: string
+  id: string
+}
+
+export default createLoader<LoaderProps, ThreadModel>({
+  loadAction: ({ subreddit, id }) => loadThread(subreddit, id),
+  getData: (state, { id }) => getThread(state, id),
+  getIsLoading: (state, { id }) => getThreadIsLoading(state, id),
+  renderData: (t) => <Thread thread={t} />
+})
