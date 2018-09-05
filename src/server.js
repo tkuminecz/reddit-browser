@@ -9,17 +9,13 @@ const app = next({
 })
 const nextHandler = routes.getRequestHandler(app)
 const port = process.env.PORT || 3000
-
-const cache = new HttpCache({
-  ttl: 30
-})
+const cache = new HttpCache({ ttl: 30 })
 
 function handler (req, res) {
   if (/^\/_next/.test(req.url)) {
     nextHandler(req, res)
   } else {
     cache(req, res, () => {
-      console.log(`${req.url} not cached!`)
       nextHandler(req, res)
     })
   }
