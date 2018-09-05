@@ -43,15 +43,17 @@ const getPageKey = (before: string, after: string) => `${before}_${after}`
 
 export const getSubredditList = selector(getNs, (state: State, before: string, after: string) => {
   const pageKey = getPageKey(before, after)
-  return (state[pageKey] != null)
-    ? state[pageKey].data
-    : null
+  if (state[pageKey] != null) {
+    const data = state[pageKey].data
+    return (data instanceof Error) ? null : data
+  } else {
+    return null
+  }
 })
 
-export const getSubredditListIsLoading = selector(getNs, (state: State, before: string, after: string) => {
-  const pageKey = getPageKey(before, after)
-  return (state[pageKey] == null)
-})
+export const getSubredditListIsLoading = (state: State, before: string, after: string) => {
+  return getSubredditList(state, before, after) == null
+}
 
 /* reducers */
 

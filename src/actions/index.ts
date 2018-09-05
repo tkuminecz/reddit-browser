@@ -1,4 +1,6 @@
 
-export const selector = (getNs, sel) => (state, ...args) => {
-  return sel(getNs(state), ...args)
+export function selector<A> (getNs, select: (s, ...args: any[]) => A): (s, ...args: any[]) => A {
+  return (state, ...args) => {
+    return select(getNs(state), ...args)
+  }
 }

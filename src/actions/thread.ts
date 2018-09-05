@@ -1,7 +1,7 @@
 import { all, call, put, select, takeEvery } from 'redux-saga/effects'
 import Thread from '#/models/Thread'
 
-const namespace = Symbol('thread').toString()
+const namespace = 'thread'
 
 /* load thread actions */
 
