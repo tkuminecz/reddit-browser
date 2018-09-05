@@ -1,6 +1,21 @@
 import 'isomorphic-fetch'
+import * as cache from '../cache'
 
-interface SubredditList {
+async function memoized (url: string) {
+  try {
+    return await cache.getItem(url)
+  } catch (err) {
+    console.log('fetching', url)
+    const res = await fetch(url)
+    const body = await res.json()
+    await cache.setItem(url, body)
+    return body
+  }
+}
+
+/* list item */
+
+interface SubredditListItem {
   banner_img?: string
   banner_size?: [number, number]
   description: string
@@ -11,11 +26,22 @@ interface SubredditList {
   subscribers: number
 }
 
-export async function fetchSubredditList () {
-  const res = await fetch(`https://www.reddit.com/subreddits.json?count=100`)
-  const body = await res.json()
-  return body.data.children.map(c => c.data) as SubredditList[]
+interface SubredditList {
+  items: SubredditListItem[]
+  after?: string
+  before?: string
 }
+
+export async function fetchSubredditList (before?: string, after?: string) {
+  const body = await memoized(`https://www.reddit.com/subreddits.json?count=25&after=${after}&before=${before}`)
+  return {
+    items: body.data.children.map(c => c.data),
+    after: body.data.after,
+    before: body.data.before
+  } as SubredditList
+}
+
+/* subreddit */
 
 interface SubredditThread {
   data: {
@@ -43,11 +69,13 @@ export async function fetchSubreddit (name: string, before?: string, after?: str
   } as Subreddit
 }
 
+/* thread */
+
 interface Thread {}
 
 export async function fetchThread (subreddit: string, id: string) {
-  const res = await fetch(`https://www.reddit.com/r/${subreddit}/comments/${id}.json`)
-  const fullResUrl: string = (await res.json())[0].data.children[0].data.permalink
+  const body = await memoized(`https://www.reddit.com/r/${subreddit}/comments/${id}.json`)
+  const fullResUrl: string = body[0].data.children[0].data.permalink
   const fullRes = await fetch(`https://www.reddit.com${fullResUrl.substring(-1)}.json`)
   return fullRes.json() as Thread
 }

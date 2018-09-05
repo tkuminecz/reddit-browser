@@ -10,10 +10,11 @@ interface Props {
 
 export default class SubredditPage extends React.Component<Props> {
 
-  static getInitialProps = async ({ query }) => ({
-    name: query.name,
-    after: query.after
-  })
+  static getInitialProps = async ({ query }) => {
+    console.log(query)
+    const { name, after } = query
+    return { name, after }
+  }
 
   render () {
     const { name, before, after } = this.props

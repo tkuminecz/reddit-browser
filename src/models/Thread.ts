@@ -16,16 +16,6 @@ interface Data {
 
 export default class Thread extends Model<Data> {
 
-  get id () { return this.get('id') }
-  get subreddit () { return this.get('subreddit') }
-  get title () { return this.get('title') }
-  get body () { return this.get('body') }
-  get preview () { return this.get('preview') }
-  get thumbnail () { return this.get('thumbnail') }
-  get comments () { return this.get('comments') }
-  get permalink () { return this.get('permalink') }
-  get url () { return this.get('url') }
-
   static getBySubredditAndId = async (subreddit: string, id: string) => {
     const res = await fetchThread(subreddit, id)
 
@@ -51,5 +41,15 @@ export default class Thread extends Model<Data> {
       url: thread.url
     })
   }
+
+  get id () { return this.get('id') }
+  get subreddit () { return this.get('subreddit') }
+  get title () { return this.get('title') }
+  get body () { return this.get('body') }
+  get preview () { return this.get('preview') }
+  get thumbnail () { return this.get('thumbnail') }
+  get comments () { return this.get('comments') }
+  get permalink () { return this.get('permalink') }
+  get url () { return this.get('url') }
 
 }

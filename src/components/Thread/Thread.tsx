@@ -1,7 +1,6 @@
 import * as React from 'react'
-import { getThreadIsLoading, getThread, loadThread } from '#/actions/reddit'
 import { Link } from '#/router'
-import createLoader from '#/components/Loader'
+import NextLink from 'next/link'
 import Comment from './Comment'
 import List from '#/components/List'
 import Markdown from '#/components/Markdown'
@@ -14,24 +13,31 @@ interface Props {
   thread: ThreadModel
 }
 
-class Thread extends React.Component<Props> {
+export default class Thread extends React.Component<Props> {
   render () {
-    const { thread } = this.props
+    const { thread: { data: thread } } = this.props
 
     return (
       <div className={styles.thread}>
         <div className={styles.subreddit}>
-          <Link route='subreddit' params={{ name: thread.subreddit }}>
-            <a>{thread.subreddit}/</a>
-          </Link>
+          {thread.subreddit &&
+            <Link
+              route='subreddit'
+              params={{
+                name: thread.subreddit
+              }}
+            >
+              <a>{thread.subreddit}/</a>
+            </Link>}
         </div>
         <div className={styles.heading}>
           <Title tag='h1'>
             {thread.title}
             <span className={styles['external-link']}>
-              <Link href={thread.permalink}>
-                <a title='Go to post on reddit'>⩉</a>
-              </Link>
+              {thread.permalink &&
+                <NextLink href={thread.permalink}>
+                  <a title='Go to post on reddit'>⩉</a>
+                </NextLink>}
             </span>
           </Title>
         </div>
@@ -45,15 +51,3 @@ class Thread extends React.Component<Props> {
     )
   }
 }
-
-interface LoaderProps {
-  subreddit: string
-  id: string
-}
-
-export default createLoader<LoaderProps, ThreadModel>({
-  loadAction: ({ subreddit, id }) => loadThread(subreddit, id),
-  getData: (state, { id }) => getThread(state, id),
-  getIsLoading: (state, { id }) => getThreadIsLoading(state, id),
-  renderData: (t) => <Thread thread={t} />
-})

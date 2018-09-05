@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { getSubreddit, getSubredditIsLoading, loadSubreddit } from '#/actions/reddit'
+import { getSubreddit, getSubredditIsLoading, loadSubreddit } from '#/actions/subreddit'
 import { Link } from '#/router'
 import createLoader from '#/components/Loader'
 import Pagination from '#/components/Pagination'
@@ -39,8 +39,8 @@ const Subreddit = ({ data }: Props) => {
         route='subreddit'
         showPrev={!!before && !isFirst(threads, before)}
         showNext={!!after && !isLast(threads, after)}
-        getPrevParams={() => ({ name, before })}
-        getNextParams={() => ({ name, after })}
+        prevParams={{ name, before }}
+        nextParams={{ name, after }}
       />
     </div>
   )

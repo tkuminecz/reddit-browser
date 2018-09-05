@@ -4,20 +4,20 @@ const styles = require('./styles.scss')
 
 interface Props {
   route: string
-  showPrev: boolean
-  showNext: boolean,
-  getPrevParams: () => {}
-  getNextParams: () => {}
+  showPrev?: boolean
+  showNext?: boolean
+  prevParams: {}
+  nextParams: {}
 }
 
-export default ({ route, getPrevParams, getNextParams, showPrev, showNext }: Props) => {
+export default ({ route, prevParams, nextParams, showPrev, showNext }: Props) => {
   return (
     <div className={styles.pagination}>
       {showPrev &&
         <div className={styles.prev}>
           <Link
             route={route}
-            params={getPrevParams()}
+            params={prevParams}
           >
             <a>&laquo; Prev Page</a>
           </Link>
@@ -26,7 +26,7 @@ export default ({ route, getPrevParams, getNextParams, showPrev, showNext }: Pro
         <div className={styles.next}>
           <Link
             route={route}
-            params={getNextParams()}
+            params={nextParams}
           >
             <a>Next Page &raquo;</a>
           </Link>
