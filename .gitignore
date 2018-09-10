@@ -1,4 +1,6 @@
 .next
 node_modules
 npm-debug.log
+perf.html
+results.bin
 yarn-error.log*

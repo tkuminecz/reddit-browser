@@ -45,6 +45,7 @@ export default function createLoader<OuterProps, Data> (loader: LoaderArgs<Outer
     (state, props) => {
       const data = loader.getData(state, props)
       const isLoading = loader.getIsLoading(state, props)
+
       return {
         data,
         isLoading

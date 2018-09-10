@@ -24,7 +24,7 @@ interface PageProps {
 
 export default class ThreadPage extends React.Component<PageProps> {
 
-  static getInitialProps = async ({ query, store }) => {
+  static getInitialProps = ({ query, store }): PageProps => {
     const { subreddit, id } = query
     store.dispatch(loadThread(subreddit, id))
     return { subreddit, id }

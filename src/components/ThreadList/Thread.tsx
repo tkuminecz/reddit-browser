@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Thread } from '#/models/Subreddit'
 import { Link } from '#/router'
+import { Thread } from '#/models/Subreddit'
 import Score from '#/components/Score'
 const styles = require('./styles.scss')
 
@@ -8,7 +8,8 @@ interface Props {
   thread: Thread
 }
 
-export default ({ thread }: Props) => {
+export default (props: Props) => {
+  const thread = props.thread.data
   return (
     <div className={styles.thread}>
       <span className={styles.score}>

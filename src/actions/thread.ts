@@ -1,25 +1,28 @@
 import { all, call, put, select, takeEvery } from 'redux-saga/effects'
-import { selector } from '#/actions'
+import { getAge, selector } from '#/actions'
+import config from '#/config'
 import Thread from '#/models/Thread'
 
 const namespace = 'thread'
 
 /* load thread actions */
 
-const LOAD = '[thread] LOAD'
-const LOAD_THREAD_SUCCESS = '[thread] LOAD_SUCCESS'
-const LOAD_THREAD_ERROR = '[thread] LOAD_ERROR'
+enum ActionTypes {
+  LOAD = '[thread] LOAD',
+  LOAD_SUCCESS = '[thread] LOAD_SUCCESS',
+  LOAD_ERROR = '[thread] LOAD_ERROR'
+}
 
 export function loadThread (subreddit: string, id: string) {
-  return { type: LOAD, subreddit, id }
+  return { type: ActionTypes.LOAD, subreddit, id }
 }
 
 function loadThreadSuccess (id: string, thread: Thread) {
-  return { type: LOAD_THREAD_SUCCESS, id, thread }
+  return { type: ActionTypes.LOAD_SUCCESS, id, thread }
 }
 
 function loadThreadError (id: string, error: Error) {
-  return { type: LOAD_THREAD_ERROR, id, error }
+  return { type: ActionTypes.LOAD_ERROR, id, error }
 }
 
 /* state */
@@ -46,6 +49,12 @@ export const getThread = selector(getNamespace, (state: State, id: string) => {
   }
 })
 
+const getThreadUpdated = selector(getNamespace, (state: State, id: string) => {
+  return (state[id] != null)
+    ? state[id].updated
+    : null
+})
+
 export const getThreadIsLoading = (state: State, id: string) => {
   return getThread(state, id) == null
 }
@@ -53,9 +62,9 @@ export const getThreadIsLoading = (state: State, id: string) => {
 /* reducers */
 
 export const reducers = {
-  [namespace]: (state = initialState, action): State => {
+  [namespace]: (state: State = initialState, action): State => {
     switch (action.type) {
-      case LOAD_THREAD_SUCCESS:
+      case ActionTypes.LOAD_SUCCESS:
         return {
           ...state,
           [action.id]: {
@@ -64,7 +73,7 @@ export const reducers = {
           }
         }
 
-      case LOAD_THREAD_ERROR:
+      case ActionTypes.LOAD_ERROR:
         return {
           ...state,
           [action.id]: {
@@ -83,14 +92,17 @@ export const reducers = {
 
 export function* saga () {
   yield all([
-    takeEvery(LOAD, loadThreadSaga)
+    takeEvery(ActionTypes.LOAD, loadThreadSaga)
   ])
 }
 
 function* loadThreadSaga (action: ReturnType<typeof loadThread>) {
   const { id, subreddit } = action
   const thread = yield select(s => getThread(s, id))
-  if (thread == null) {
+  const updated = yield select(s => getThreadUpdated(s, id))
+  const age = updated ? getAge(updated) : 0
+
+  if (thread == null || age >= config.redux.cacheTTL) {
     try {
       const thread = yield call(Thread.getBySubredditAndId, subreddit, id)
       yield put(loadThreadSuccess(id, thread))

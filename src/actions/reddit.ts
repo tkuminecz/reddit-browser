@@ -1,6 +1,6 @@
 import { all, call, put, select, takeEvery } from 'redux-saga/effects'
 import SubredditList from '#/models/SubredditList'
-import { selector } from '#/actions'
+import { getAge, selector } from '#/actions'
 
 const namespace = 'reddit'
 
@@ -51,6 +51,13 @@ export const getSubredditList = selector(getNs, (state: State, before: string, a
   }
 })
 
+export const getSubredditListUpdated = selector(getNs, (state: State, before: string, after: string) => {
+  const pageKey = getPageKey(before, after)
+  return (state[pageKey] != null)
+    ? state[pageKey].updated
+    : null
+})
+
 export const getSubredditListIsLoading = (state: State, before: string, after: string) => {
   return getSubredditList(state, before, after) == null
 }
@@ -83,10 +90,15 @@ export function* saga () {
   ])
 }
 
+const THIRTY_MINS = 60 * 30
+
 function* loadSubredditListSaga (action: ReturnType<typeof loadSubredditList>) {
   const { before, after } = action
   const list = yield select(s => getSubredditList(s, before, after))
-  if (list == null) {
+  const updated = yield select(s => getSubredditListUpdated(s, before, after))
+  const age = getAge(updated)
+
+  if (list == null && age >= THIRTY_MINS) {
     try {
       const list = yield call(SubredditList.get, before, after)
       yield put(loadSubredditListSuccess(list, before, after))

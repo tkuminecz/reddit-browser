@@ -24,7 +24,7 @@ interface PageProps {
 
 export default class BrowseSubredditPage extends React.Component<PageProps> {
 
-  static getInitialProps = async ({ query , store }) => {
+  static getInitialProps = ({ query , store }): PageProps => {
     const { before, after } = query
     store.dispatch(loadSubredditList(before, after))
     return { after, before }
